@@ -12,6 +12,150 @@ const render = require("./lib/htmlRenderer");
 
 
 // Write code to use inquirer to gather information about the development team members,
+const team = [];
+
+    function confirmManager() {
+        inquirer
+            .prompt([
+                {
+                    type: "confirm", 
+                    message: "Are you the team manager?",
+                    name: "managerConfirm"
+                }
+            ]).then(res => {
+                if (res.managerConfirm) {
+                    createManager()
+                } else {
+                    console.log("You need to be a manager to create a team!")
+                    process.exit(0);
+                }
+            })
+    };
+
+
+    function createManager() {
+        inquirer
+            .prompt([
+                {
+                   type: "input"
+                   , message: "What is your managers name?"
+                   , name: "managerName"
+                },
+                {
+                   type: "input"
+                   , message: "What is your managers ID?"
+                   , name: "managerID"
+                },
+                {
+                   type: "input"
+                   , message: "What is your managers office phone?"
+                   , name: "managerPhone"
+                },
+                {
+                   type: "input"
+                   , message: "What is your managers office email?"
+                   , name: "managerEmail"
+                },
+            ]).then(res => {
+                const manager = new Manager(res.managerName, res.managerID, res.managerEmail, res.managerPhone);
+                team.push(manager);
+                createTeam();
+            });
+    };
+
+
+    function createTeam() {
+        inquirer
+            .prompt([
+                {
+                    type: "list"
+                    , message: "What teams members would you like to create?"
+                    , choices: ["Engineer", "Intern", "I'm done Adding Team Members"]
+                    , name: "employeeType"
+                }
+            ]).then(res => {
+                if (res.employeeType ==="Engineer"){
+                    createEngineer();
+                } else if (res.employeeType === "Intern") {
+                    createIntern();
+                } else {
+                    fs.writeFile(outputPath, render(team), err => {
+                        if (err) throw err;
+                        console.log("team.html document generated!")
+                    })
+
+
+                }
+            });
+    };
+
+
+    function createEngineer() {
+        inquirer
+            .prompt([
+                {
+                    type: "input"
+                    , message: "What is your engineer's name?"
+                    , name: "engineerName"
+                },
+                {
+                    type: "input"
+                    , message: "What is the engineer's ID?"
+                    , name: "engineerID"
+                },
+                {
+                    type: "input"
+                    , message: "What is the engineer's gitlab username?"
+                    , name: "engineerPhone"
+                },
+                {
+                    type: "input"
+                    , message: "What is the engineer's email?"
+                    , name: "engineerEmail"
+                },
+            ]).then(res => {
+                const engineer = new Engineer(res.engineerName, res.engineerID, res.engineerEmail, res.engineerPhone);
+                team.push(engineer);
+                createTeam();
+            });
+    };
+
+
+    function createIntern() {
+        inquirer
+            .prompt([
+                {
+                    type: "input"
+                    , message: "What is the inter's name?"
+                    , name: "internName"
+                },
+                {
+                    type: "input"
+                    , message: "What is the inter's ID?"
+                    , name: "internID"
+                },
+                {
+                    type: "input"
+                    , message: "What is the inter's school?"
+                    , name: "internSchool"
+                },
+                {
+                    type: "input"
+                    , message: "What is the inter's office email?"
+                    , name: "internEmail"
+                },
+            ]).then(res => {
+                const intern = new Intern(res.internName, res.internID, res.internEmail, res.internSchool);
+                team.push(intern);
+                createTeam();
+            });
+    }
+
+
+
+
+confirmManager();
+
 // and to create objects for each team member (using the correct classes as blueprints!)
 
 // After the user has input all employees desired, call the `render` function (required
